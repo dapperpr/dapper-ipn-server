@@ -1,0 +1,9 @@
+{
+  "name": "dapper-ipn-server",
+  "description": "PayPal IPN server for DapperPR clients.",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x"
+  }
+}
