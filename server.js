@@ -5,6 +5,6 @@ var app = express()
   .use( express.vhost( 'ipn.dapperpr.com', require( './ipn/app.js' ).app ) )
 
   // listen on port 80
-  .listen( 80 )
+  .listen( process.env.PORT || 8000 )
 ;
 
