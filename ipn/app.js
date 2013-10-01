@@ -5,7 +5,7 @@ var doT = require( 'dot' );
 var redis = require( 'redis' );
 var app = express();
 var db = redis.createClient(
-  process.end.REDIS_PORT || 6379,
+  process.env.REDIS_PORT || 6379,
   process.env.REDIS_HOST || 'localhost'
 );
 
