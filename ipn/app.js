@@ -1,6 +1,7 @@
 var fs = require( 'fs' );
 var express = require( 'express' );
 var email = require( 'emailjs' );
+var doT = require( 'dot' );
 //var redis = require( 'redis' );
 var app = express();
 /*var db = redis.createClient(
@@ -38,6 +39,7 @@ function log ( msg ) {
   var dt = new Date();
   console.log( '[dod]['
       + dt.getFullYear() + "" + pad( dt.getMonth() + 1, 2 ) + "" + pad( dt.getDate(), 2 )
+      + pad( dt.getHours(), 2 ) + pad( dt.getMinutes(), 2 ) + pad( dt.getSeconds(), 2 )
       + '] ' 
       + msg 
   );
