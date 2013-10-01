@@ -94,7 +94,11 @@ app.get( '/', function ( req, res ) {
 
 app.post( '/dod', function ( req, res ) {
   var ipn = req.body;
-  log( "Received " + ipn.txn_type + " IPN: " + ipn.payer_email + ", " + ipn.txn_id );
+  log( "Received " + ipn.txn_type + " IPN: "
+    + ipn.payer_email 
+    + ", TXN_ID: " + ipn.txn_id 
+    + ", UUID: " + ( ipn.custom || 'n/a' ) );
+
   if ( ipn.txn_type === "web_accept" ) {
     sendEmail( ipn );
     // TODO: record in DB
