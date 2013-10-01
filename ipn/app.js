@@ -2,12 +2,17 @@ var fs = require( 'fs' );
 var express = require( 'express' );
 var email = require( 'emailjs' );
 var doT = require( 'dot' );
-//var redis = require( 'redis' );
+var redis = require( 'redis' );
 var app = express();
-/*var db = redis.createClient(
-  6379,
+var db = redis.createClient(
+  process.end.REDIS_PORT || 6379,
   process.env.REDIS_HOST || 'localhost'
-);*/ 
+);
+
+// some redis error logging:
+db.on( "error", function ( err ) {
+  log( "Redis error: " + err.toString() );
+});
 
 // translate request bodies to JSON
 app.use( express.json() );
@@ -95,7 +100,28 @@ app.post( '/dod', function ( req, res ) {
     + ", TXN_ID: " + ipn.txn_id 
     + ", UUID: " + ( ipn.custom || 'n/a' ) );
 
+  db.rpush( 'ipn_tx', ipn.txn_type + ',' + ipn.txn_id + ',' + ipn.custom );
+
   if ( ipn.txn_type === "web_accept" ) {
+    if ( ipn.test_ipn && ipn.test_ipn === 1 ) {
+      log( "This is a test record: " + ipn.txn_id );
+      db.sadd( 'web_accept_tests', ipn.txn_id );
+    } else {
+      db.sadd( 'web_accept_orders', ipn.txn_id );
+    }
+
+    db.hmset( 'web_accept_order:'+ipn.txn_id, {
+      "txn_id": ipn.txn_id, 
+      "uuid": ipn.custom || "N",
+      "redeemed": "N", 
+      "qty": ipn.quantity,
+      "type": ipn.item_name,
+      "fname": ipn.first_name,
+      "lname": ipn.last_name,
+      "test": ( ipn.text_ipn ? "Y" : "N" )
+    });
+
+    // send the qr code/ticket email
     sendEmail( ipn, function ( err, msg ) {
       if ( err ) {
         log( "Error sending email for " + ipn.txn_id + ": " + err.toString() + ": " + err.smtp );
