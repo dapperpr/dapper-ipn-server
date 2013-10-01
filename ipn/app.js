@@ -96,7 +96,7 @@ app.post( '/dod', function ( req, res ) {
   if ( ipn.txn_type === "web_accept" ) {
     sendEmail( ipn, function ( err, msg ) {
       if ( err ) {
-        log( "Error sending email for " + ipn.txn_id + ": " + err.toString() );
+        log( "Error sending email for " + ipn.txn_id + ": " + err.toString() + ": " + err.smtp );
       } else {
         log( "Sent QR to " + ipn.payer_email + " for " + ipn.txn_id );
       }
