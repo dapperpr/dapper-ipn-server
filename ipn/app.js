@@ -70,20 +70,11 @@ function sendEmail ( ipn, cb ) {
       subject: 'Dreams of Darkness Tickets',
       attachment: [
         {
-          inline: true,
-          data: 'html',
-          type: 'text/html'
+          alternative: true,
+          data: msg
         }
       ]
-    }, function ( err, msg ) {
-      if ( err ) {
-        log( "Error sending email for " + ipn.txn_id + ": " + err.toString() );
-      } else {
-        log( "Sent QR to " + ipn.payer_email + " for " + ipn.txn_id );
-      }
-
-      cb && cb();
-    });
+    }, cb );
   });
 }
 
@@ -103,9 +94,14 @@ app.post( '/dod', function ( req, res ) {
     + ", UUID: " + ( ipn.custom || 'n/a' ) );
 
   if ( ipn.txn_type === "web_accept" ) {
-    sendEmail( ipn, function () {
-      log( "Email send for IPN: " + ipn.txn_id );
+    sendEmail( ipn, function ( err, msg ) {
+      if ( err ) {
+        log( "Error sending email for " + ipn.txn_id + ": " + err.toString() );
+      } else {
+        log( "Sent QR to " + ipn.payer_email + " for " + ipn.txn_id );
+      }
     });
+
     // TODO: record in DB
   }
 
