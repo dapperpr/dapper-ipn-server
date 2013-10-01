@@ -1,5 +1,6 @@
 var fs = require( 'fs' );
 var express = require( 'express' );
+var email = require( 'emailjs' );
 //var redis = require( 'redis' );
 var app = express();
 /*var db = redis.createClient(
@@ -100,9 +101,14 @@ app.post( '/dod', function ( req, res ) {
     + ", UUID: " + ( ipn.custom || 'n/a' ) );
 
   if ( ipn.txn_type === "web_accept" ) {
-    sendEmail( ipn );
+    sendEmail( ipn, function () {
+      log( "Email send for IPN: " + ipn.txn_id );
+    });
     // TODO: record in DB
   }
+
+  // TODO: handle errors
+  res.send( "Success" );
 });
 
 exports.app = app;
