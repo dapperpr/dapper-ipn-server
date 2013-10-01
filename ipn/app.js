@@ -61,7 +61,9 @@ function sendEmail ( ipn, cb ) {
   withTemplate( function ( tpl ) {
     msg = emailTemplate({
       url: encodeURIComponent( 'http://ipn.dapperpr.com/dod/verify/' + ipn.txn_id ),
-      name: ipn.first_name
+      name: ipn.first_name,
+      qty: ipn.quantity,
+      time: ipn.item_name
     });
 
     server.send({
@@ -98,7 +100,7 @@ app.post( '/dod', function ( req, res ) {
       if ( err ) {
         log( "Error sending email for " + ipn.txn_id + ": " + err.toString() + ": " + err.smtp );
       } else {
-        log( "Sent QR to " + ipn.payer_email + " for " + ipn.txn_id );
+        log( "Sent QR to " + ipn.payer_email + " (" + ipn.custom + ") for " + ipn.txn_id );
       }
     });
 
