@@ -66,7 +66,7 @@ function sendEmail ( ipn, cb ) {
 
     server.send({
       to: ipn.payer_email,
-      from: emailSettings.user,
+      from: 'Dreams of Darkness Haunted House <' + emailSettings.user + '>',
       subject: 'Dreams of Darkness Tickets',
       attachment: [
         {
