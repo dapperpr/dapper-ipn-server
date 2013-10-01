@@ -5,7 +5,7 @@ var app = express();
 /*var db = redis.createClient(
   6379,
   process.env.REDIS_HOST || 'localhost'
-);*/
+);*/ 
 
 // translate request bodies to JSON
 app.use( express.json() );
