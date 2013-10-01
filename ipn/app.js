@@ -89,7 +89,7 @@ function sendEmail ( ipn, cb ) {
  */
 
 app.get( '/', function ( req, res ) {
-  res.send( "Access denied.", 403 );
+  res.send( "Not intended to be accessed manually." );
 });
 
 app.post( '/dod', function ( req, res ) {
