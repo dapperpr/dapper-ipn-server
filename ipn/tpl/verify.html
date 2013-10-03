@@ -11,7 +11,7 @@
       var app = angular.module( "app", [] );
 
       app.controller( "VerifyCtrl", function ( $scope, $http, $location ) {
-        function get ( id ) {
+        $scope.get = function get ( id ) {
           $http.get( '/dod/get/' + id ).then( function ( response ) {
             $scope.error = false;
             $scope.ticket = response.data
@@ -24,7 +24,7 @@
               $scope.error = "Unable to fetch ticket: internal error.";
             }
           });
-        }
+        };
 
         $scope.redeem = function () {
           $http.post( '/dod/redeem/' + $scope.ticket.txn_id ).then( function ( response ) {
@@ -37,7 +37,7 @@
 
         $scope.$watch( function () { return $location.url(); }, function ( url ) {
           if ( url ) {
-            get( url.substr( 1 ) );
+            $scope.get( url.substr( 1 ) );
           }
         });
       });
@@ -57,6 +57,10 @@
         margin: 0 auto;
       }
 
+      .redeem {
+        margin-top: 10px;
+      }
+
       .redeem input, .redeem button {
         margin-bottom: 10px;
       }
@@ -68,6 +72,16 @@
     <div class="container">
       <h1>Verify & Redeem Tickets</h1>
 
+      <div class="search">
+        <div class="input-group">
+          <input type="text" class="form-control" ng-model="id" />
+          <span class="input-group-btn">
+            <a class="btn btn-default" type="button" placeholder="ticket id" ng-href="#/{{id}}">
+              Verify
+            </a>
+          </span>
+        </div>
+      </div>
       <div class="redeem" ng-show="ticket">
         <p>
           <strong>{{ticket.qty}} {{ticket.type}} ticket(s).</strong>
