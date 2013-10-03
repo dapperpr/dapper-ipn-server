@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dreams of Darkness Box Office</title>
+
+    <script src="//cdn.dapperpr.com/ng/angular.min.js"></script>
+    <script src="//cdn.dapperpr.com/ng/angular-touch.min.js"></script>
+    <script>
+      var app = angular.module( "app", [] );
+
+      app.controller( "VerifyCtrl", function ( $scope, $http, $location ) {
+        function get ( id ) {
+          $http.get( '/dod/get/' + id ).then( function ( response ) {
+            $scope.error = false;
+            $scope.ticket = response.data
+            $scope.id = $scope.ticket.txn_id;
+          }, function ( response ) {
+            $scope.ticket = false;
+            if ( response.status == 404 ) {
+              $scope.error = "Could not locate ticket with ID: " + id;
+            } else {
+              $scope.error = "Unable to fetch ticket: internal error.";
+            }
+          });
+        }
+
+        $scope.redeem = function () {
+          $http.post( '/dod/redeem/' + $scope.ticket.txn_id ).then( function ( response ) {
+            $scope.error = false;
+            $scope.ticket = response.data;
+          }, function ( response ) {
+            $scope.error = "Unable to redeem ticket: internal error.";
+          });
+        };
+
+        $scope.$watch( function () { return $location.url(); }, function ( url ) {
+          if ( url ) {
+            get( url.substr( 1 ) );
+          }
+        });
+      });
+    </script>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+    <style>
+      body {
+        background-color: #eee;
+      }
+
+      .container {
+        max-width: 600px;
+        padding: 15px;
+        margin: 0 auto;
+      }
+
+      .redeem input, .redeem button {
+        margin-bottom: 10px;
+      }
+    </style>
+
+  </head>
+
+  <body ng-controller="VerifyCtrl">
+    <div class="container">
+      <h1>Verify & Redeem Tickets</h1>
+
+      <div class="redeem" ng-show="ticket">
+        <p>
+          <strong>{{ticket.qty}} {{ticket.type}} ticket(s).</strong>
+          Purchased by {{ticket.fname}} {{ticket.lname}} on {{ticket.dt}}.
+        </p>
+
+        <div ng-show="ticket.redeemed == 'Y'"
+          class="alert alert-warning">
+          This ticket was redeemed on: {{ticket.redeemed_at}}.
+        </div>
+
+        <button ng-disabled="ticket.redeemed === 'Y'" ng-click="redeem()" 
+          class="btn btn-lg btn-success btn-primary btn-block">Redeem</button>
+      </div>
+      <div ng-show="error" class="alert alert-danger">{{error}}</div>
+    </div>
+  </body>
+</html>
+

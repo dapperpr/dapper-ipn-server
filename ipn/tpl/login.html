@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dreams of Darkness Box Office</title>
+
+    <script src="//cdn.dapperpr.com/ng/angular.min.js"></script>
+    <script src="//cdn.dapperpr.com/ng/angular-touch.min.js"></script>
+    <script>
+      var app = angular.module( "app", [] );
+
+      app.controller( "LoginCtrl", function ( $scope, $http ) {
+        $scope.login = function ( user ) {
+          $http.post( '/dod/login', user ).then( function ( response ) {
+            $scope.error = false;
+            $scope.success = "Logged in successfully."
+          }, function ( response ) {
+            $scope.error = "Unable to login.";
+            $scope.success = false;
+          });
+        };
+      });
+    </script>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+    <style>
+      body {
+        background-color: #eee;
+      }
+
+      .form-signin {
+        max-width: 330px;
+        padding: 15px;
+        margin: 0 auto;
+      }
+
+      .form-signin input, .form-signin button, .form-signin .verify-link {
+        margin-bottom: 10px;
+      }
+
+      .alert, .verify-link {
+        transition: 0.5s;
+        -webkit-transition: 0.5s;
+        -moz-transition: 0.5s;
+        opacity: 0;
+      }
+
+      .alert.show, .verify-link.show {
+        opacity: 1;
+      }
+    </style>
+
+  </head>
+
+  <body ng-controller="LoginCtrl">
+    <div class="container">
+      <form novalidate class="form-signin">
+        <h1>Sign In</h1>
+
+        <div class="verify-link" ng-class="{show: success}">
+          <a href="/dod/verify">Manually verify a ticket.</a>
+        </div>
+
+        <div class="control-group">
+          <div class="controls">
+            <input ng-model="user.username" type="text" class="form-control input-lg" placeholder="username">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="controls">
+            <input ng-model="user.password" type="password" class="form-control input-lg" placeholder="password">
+          </div>
+        </div>
+
+        <button ng-click="login(user)" class="btn btn-lg btn-primary btn-block">Sign in</button>
+
+        <div ng-class="{show: success || error, 'alert-success': success, 'alert-danger': error }" 
+          class="alert">{{success || error}}</div>
+      </form>
+    </div>
+  </body>
+</html>
+

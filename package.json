@@ -7,6 +7,9 @@
     "express": "~3.0",
     "emailjs": "~0.3",
     "dot": "~1.0.2",
-    "redis": "~0.8.5"
+    "redis": "~0.8.5",
+    "passport-local": "~0.1.6",
+    "passport": "~0.1.17",
+    "ejs": "~0.8.4"
   }
 }
