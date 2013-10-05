@@ -236,6 +236,14 @@ app.post( '/dod', function ( req, res ) {
     + ", UUID: " + ( ipn.custom || 'n/a' ) );
 
   db.rpush( 'ipn_tx', ipn.txn_type + ',' + ipn.txn_id + ',' + ipn.custom );
+  db.sadd( "txn:" + ipn.txn_type, ipn.txn_id );
+  db.hmset( 'txn:' + ipn.txn_type + ':' + ipn.txn_id, {
+    qty: ipn.quantity,
+    amt: ipn.auth_amount,
+    mc_fee: ipn.mc_fee,
+    mc_gross: ipn.mc_gross,
+    dt: ipn.payment_date
+  });
 
   if ( ipn.txn_type === "web_accept" ) {
     db.sadd( 'web_accept_orders', ipn.txn_id );
